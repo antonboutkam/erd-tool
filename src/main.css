@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body, #application {
+    background-color: black;
+    height: 100%;
+    overflow: hidden;
+}
+
+.diagram-container {
+    background: #333333;
+    width: 100%;
+    height: 100%;
+}
+
+.custom-node {
+    border: solid 2px gray;
+    border-radius: 5px;
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+}
+
+.custom-node-color {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+.circle-port {
+    width: 12px;
+    height: 12px;
+    margin: 2px;
+    border-radius: 4px;
+    background: darkgray;
+    cursor: pointer;
+}
+
+.circle-port:hover {
+    background: mediumpurple;
+}
+
+/* Table name / box label */
+div.label-container {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    background-color: rgb(0, 192, 255);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding:2px 0 4px 0;
+    font-family: sans-serif;
+    color: white;
+    overflow: visible;
+    font-size: 11px;
+}
+
+    div.label-container h3 {
+        display: flex;
+        padding: 0 5px 0 5px;
+        font-size: 1.17em;
+        font-weight: bold;
+    }
+
+/* Column name / box-row */
+div.field-container {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    box-sizing: border-box;
+    line-height: 1.5em;
+    font-size: 11px;
+}
+
+    div.field-container .field {
+        flex: 1;
+        flex-grow: 7;
+        padding-right:4px;
+        text-align: right;
+        font-family: sans-serif;
+        background-color: #2f2639;
+        color: white;
+        font-weight: bold;
+    }
+
+    div.field-container .field-type {
+        display: flex;
+        flex: 1;
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+        padding: 0 3px 0 5px;
+        font-family: sans-serif;
+        background-color: #ebebeb;
+        color:#000;
+        font-weight: bold;
+    }
+
+    div.field-container .connector-in, div.field-container .connector-out {
+        display: flex;
+        flex-grow: 0;     /* do not grow   - initial value: 0 */
+        flex-shrink: 0;   /* do not shrink - initial value: 1 */
+        flex-basis: 0;
+
+        padding: 0 2px ;
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+
+    div.field-container .connector-in .port, div.field-container .connector-out .port {
+        background-color: #ebebeb;
+        font-weight: bold;
+        width:5px;
+    }
+
+    div.field-container .field-type.VARCHAR {
+        display: flex;
+        flex: 1;
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+        padding: 0 3px 0 5px;
+        text-align:center;
+        font-family: sans-serif;
+        background-color: #e5e400;
+        color:#000;
+        font-weight: bold;
+    }
+
