@@ -1,23 +1,17 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-
-export interface WorkspaceWidgetProps {
-	buttons?: any;
-}
-
-namespace S {
-	export const Toolbar = styled.div`
+var S;
+(function (S) {
+    S.Toolbar = styled.div `
 		padding: 5px;
 		display: flex;
 		flex-shrink: 0;
 	`;
-
-	export const Content = styled.div`
+    S.Content = styled.div `
 		flex-grow: 1;
 		height: 100%;
 	`;
-
-	export const Container = styled.div`
+    S.Container = styled.div `
 		background: black;
 		display: flex;
 		flex-direction: column;
@@ -25,9 +19,8 @@ namespace S {
 		border-radius: 5px;
 		overflow: hidden;
 	`;
-}
-
-export const TopButton = styled.button`
+})(S || (S = {}));
+export const TopButton = styled.button `
 	background: rgb(60, 60, 60);
 	font-size: 14px;
 	padding: 5px 10px;
@@ -42,8 +35,7 @@ export const TopButton = styled.button`
 		background: rgb(0, 192, 255);
 	}
 `;
-
-export const TopButtonRight = styled.button`
+export const TopButtonRight = styled.button `
 	background: rgb(60, 60, 60);
 	font-size: 14px;
 	padding: 5px 10px;
@@ -58,15 +50,10 @@ export const TopButtonRight = styled.button`
 		background: rgb(0, 192, 255);
 	}
 `;
-
-
-export class WorkspaceWidget extends React.Component<WorkspaceWidgetProps> {
-	render() {
-		return (
-			<S.Container>
-				<S.Toolbar>{this.props.buttons}</S.Toolbar>
-				<S.Content>{this.props.children}</S.Content>
-			</S.Container>
-		);
-	}
+export class WorkspaceWidget extends React.Component {
+    render() {
+        return (React.createElement(S.Container, null,
+            React.createElement(S.Toolbar, null, this.props.buttons),
+            React.createElement(S.Content, null, this.props.children)));
+    }
 }

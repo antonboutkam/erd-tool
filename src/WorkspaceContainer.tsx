@@ -5,9 +5,13 @@ import createEngine, {
     PathFindingLinkFactory
 } from '@projectstorm/react-diagrams';
 import * as React from 'react';
-import { TopButton, WorkspaceWidget } from './helpers/WorkspaceWidget';
+import { TopButton, TopButtonRight, WorkspaceWidget } from './helpers/WorkspaceWidget';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { CanvasContainerWidget } from './helpers/CanvasContainerWidget';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearchMinus, faSearchPlus, faTable, faCogs } from '@fortawesome/free-solid-svg-icons'
+import { Settings } from "./Settings";
+import {Messenger} from "./helpers/Messenger";
 
 /**
  * Tests auto distribution
@@ -15,18 +19,32 @@ import { CanvasContainerWidget } from './helpers/CanvasContainerWidget';
 export class WorkspaceContainer extends React.Component<{ model: DiagramModel; engine: DiagramEngine }, any> {
     engine: DagreEngine;
 
+    static staticEngine: DagreEngine;
+
+    static getEngine():DagreEngine
+    {
+        return WorkspaceContainer.staticEngine;
+    }
+
     constructor(props) {
         super(props);
         this.engine = new DagreEngine({
             graph: {
                 rankdir: 'LR',
-                ranker: 'longest-path',
+                ranker: 'tight-tree',
                 compound:true,
-                marginx: 20,
-                marginy: 20
+                nodesep:10,
+                edgesep : 10,
+                ranksep : 5,
+                marginx: 4,
+                marginy: 4
             },
             includeLinks: true
         });
+        WorkspaceContainer.staticEngine = this.engine;
+        this.zoom = this.zoom.bind(this);
+        this.zoomOut = this.zoomOut.bind(this);
+        this.zoomIn = this.zoomIn.bind(this);
     }
 
     autoDistribute = () => {
@@ -35,12 +53,18 @@ export class WorkspaceContainer extends React.Component<{ model: DiagramModel; e
         // only happens if pathfing is enabled (check line 25)
         this.reroute();
         this.props.engine.repaintCanvas();
+        this.props.engine.getModel().setZoomLevel(Settings.defaultZoomLevel);
     };
 
     componentDidMount(): void {
         setTimeout(() => {
+            this.props.engine.zoomToFit();
             this.autoDistribute();
-        }, 500);
+
+            setTimeout(() => {
+                this.zoom(Settings.defaultZoomLevel);
+            }, 500);
+        }, 1000);
     }
 
     reroute() {
@@ -48,12 +72,54 @@ export class WorkspaceContainer extends React.Component<{ model: DiagramModel; e
             .getLinkFactories()
             .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
             .calculateRoutingMatrix();
+        setTimeout(() => {
+            this.zoom(Settings.defaultZoomLevel);
+        }, 500);
+
     }
 
-    render() {
+    private zoom(zoomDifference)
+    {
+        const enine = this.props.engine;
+        const model = enine.getModel();
+        console.log('factor: ' + zoomDifference + ', level: ' + model.getZoomLevel());
+
+        let zoomLevel = model.getZoomLevel();
+
+        model.setZoomLevel(zoomLevel + zoomDifference);
+        enine.repaintCanvas();
+
+    }
+
+    zoomOut() {
+        this.zoom(-1.1);
+    }
+    zoomIn() {
+        this.zoom(1.1);
+    }
+
+    render()
+    {
+        const zoomInIcon = (<FontAwesomeIcon icon={faSearchPlus} />);
+        const zoomOutIcon = (<FontAwesomeIcon icon={faSearchMinus} />);
+        const modelIcon = (<FontAwesomeIcon icon={faTable} />);
+        const cogsIcon = (<FontAwesomeIcon icon={faCogs} />);
+
+
+
+        let buttons = (
+            <React.Fragment>
+                <TopButton onClick={this.autoDistribute}> Re-distribute</TopButton>
+                <TopButton onClick={this.zoomIn}>{zoomInIcon} Zoom in</TopButton>
+                <TopButton onClick={this.zoomOut}>{zoomOutIcon} Zoom out</TopButton>
+                <TopButton onClick={() => Messenger.send('add_model', {})}>{modelIcon} Add model</TopButton>
+                <TopButtonRight onClick={() => Messenger.send('deploy', {deploy : true})}>{cogsIcon} Deploy</TopButtonRight>
+
+            </React.Fragment>
+        );
 
         return (
-            <WorkspaceWidget buttons={<TopButton onClick={this.autoDistribute}>Re-distribute</TopButton>}>
+            <WorkspaceWidget buttons={buttons}>
                 <CanvasContainerWidget>
                     <CanvasWidget engine={this.props.engine} />
                 </CanvasContainerWidget>

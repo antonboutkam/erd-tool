@@ -1,9 +1,8 @@
 {
-	"name": "@projectstorm/react-diagrams-demo",
-	"version": "6.0.2",
-	"author": "dylanvorster",
+	"name": "erd-tool",
+	"version": "1.0.0",
+	"author": "anton boutkam",
 	"license": "MIT",
-	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/projectstorm/react-diagrams.git"
@@ -25,9 +24,16 @@
 	"main": "./dist/index.js",
 	"typings": "./dist/@types/index",
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^1.2.20",
+		"@fortawesome/free-solid-svg-icons": "^5.12.1",
+		"@fortawesome/react-fontawesome": "^0.1.9",
 		"@projectstorm/react-diagrams": "^6.0.2",
 		"bluebird": "^3.7.2",
+		"lodash": "4.*",
 		"node-fetch": "^2.6.0",
+		"query-string": "^6.11.1",
+		"regenerator-runtime": "*",
+		"vue": "^2.0.0",
 		"webpack": "^4.38.0",
 		"webpack-cli": "^3.3.6",
 		"webpack-dev-server": "^3.7.2",
@@ -74,7 +80,6 @@
 		"jest-puppeteer": "^4.3.0",
 		"json-beautify": "^1.1.0",
 		"lerna": "^3.16.4",
-		"lodash": "4.*",
 		"mathjs": "^6.0.3",
 		"pathfinding": "^0.4.18",
 		"paths-js": "^0.4.9",
