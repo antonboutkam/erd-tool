@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/../hurah/.idea/hurah.iml" filepath="$PROJECT_DIR$/../hurah/.idea/hurah.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/table-designer.iml" filepath="$PROJECT_DIR$/.idea/table-designer.iml" />
-    </modules>
-  </component>
-</project>
