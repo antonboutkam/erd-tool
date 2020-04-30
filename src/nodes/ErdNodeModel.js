@@ -1,10 +1,10 @@
-import { NodeModel } from '@projectstorm/react-diagrams-core/src/entities/node/NodeModel';
-import { PortModel } from '@projectstorm/react-diagrams-core/src/entities/port/PortModel';
+import { NodeModel } from '@projectstorm/react-diagrams-core/';
 import { Table } from '../models/Table';
+import { ErdPortModel } from "./ErdPortModel";
 let portRegister = {};
 export class ErdNodeModel extends NodeModel {
     constructor(options = {}) {
-        super(Object.assign({}, options, { type: 'ts-custom-node' }));
+        super(Object.assign(Object.assign({}, options), { type: 'ts-custom-node' }));
         this.color = options.color || 'red';
         this.table = options.table || new Table();
         let currentModel = this;
@@ -16,7 +16,7 @@ export class ErdNodeModel extends NodeModel {
                 in: true,
                 name: portName
             };
-            portRegister[portName] = currentModel.addPort(new PortModel(portModelOptions));
+            portRegister[portName] = currentModel.addPort(new ErdPortModel(portModelOptions));
         });
         this.table.fields.forEach((field) => {
             let portName = ErdNodeModel.getPortName(this.table, field, 'out');
@@ -26,7 +26,7 @@ export class ErdNodeModel extends NodeModel {
                 in: false,
                 name: portName
             };
-            portRegister[portName] = currentModel.addPort(new PortModel(portModelOptions));
+            portRegister[portName] = currentModel.addPort(new ErdPortModel(portModelOptions));
         });
     }
     removePortByName(name) {
@@ -57,7 +57,7 @@ export class ErdNodeModel extends NodeModel {
         return portRegister[portName];
     }
     serialize() {
-        return Object.assign({}, super.serialize(), { color: this.color, table: this.table });
+        return Object.assign(Object.assign({}, super.serialize()), { color: this.color, table: this.table });
     }
     deserialize(event) {
         super.deserialize(event);

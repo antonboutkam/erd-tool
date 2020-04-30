@@ -1,18 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import createEngine, { DefaultLinkModel } from '@projectstorm/react-diagrams';
-import { ErdDiagramModel } from "./nodes/ErdDiagramModel";
 import { ErdNodeFactory } from './nodes/ErdNodeFactory';
 import { ErdNodeModel } from './nodes/ErdNodeModel';
 import { WorkspaceContainer } from "./WorkspaceContainer";
 import { eventHandler } from "./nodes/EventHandler";
-import { SerializeHelper } from "./helpers/SerializeHelper";
-let newEngine = () => {
-    const engine = createEngine();
-    engine.getNodeFactories().registerFactory(new ErdNodeFactory());
-    return engine;
-};
-let engine = newEngine();
+const engine = createEngine();
+engine.getNodeFactories().registerFactory(new ErdNodeFactory());
 export class Renderer {
     static redistribute(model) {
         WorkspaceContainer.getEngine().redistribute(model);
@@ -34,54 +28,79 @@ export class Renderer {
             2. Verwijder de "in" en "out" ports.
             3. Verwijder spook links
          */
-        let model = diagramModel.findModel(field);
+        let model = diagramModel.findNode(field);
         model.removePortByName(field.name + '_in');
         model.removePortByName(field.name + '_out');
         model.table.removeField(field);
-        console.log('ERD', 'Renderer.removeField()', field);
-        const oSerializeHelper = new SerializeHelper(diagramModel);
-        oSerializeHelper.removeField(field);
-        const oLinks = oSerializeHelper.getLinks();
-        console.log('ERD', 'Models:', "\t", oModels);
-        let newLinks = [];
-        // Loop over alle links
-        for (let sLinkKey in oLinks) {
-            let table = oLinks[sLinkKey].table;
-            let fields = table.fields;
-            for (let i = 0; i < fields.length; i++) {
-                if (table.name != field.table_name) {
-                    continue;
-                }
-                if (fields[i].name == field.name && table.name == field.table_name) {
-                    continue;
-                }
-                newLinks.push();
-                if (oLinks.hasOwnProperty(sLinkKey)) {
-                    if (oLinks[sLinkKey].table.name == field.table_name) {
+        return diagramModel;
+        /*
+        
+                console.log('ERD', 'Renderer.removeField()', field);
+        
+                const oSerializeHelper = new SerializeHelper(diagramModel);
+        
+                oSerializeHelper.removeField(field);
+        
+        
+                const oLinks = oSerializeHelper.getLinks();
+                console.log('ERD', 'Models:', "\t", oModels);
+        
+                let newLinks:Link[] = [];
+        
+                // Loop over alle links
+                for(let sLinkKey in oLinks)
+                {
+                    let table = oLinks[sLinkKey].table;
+                    let fields = table.fields;
+        
+                    for(let i = 0; i < fields.length; i++) {
+                        if (table.name != field.table_name) {
+                            continue;
+                        }
+        
+                        if (fields[i].name == field.name && table.name == field.table_name) {
+                            continue;
+                        }
+        
+                        newLinks.push();
+                        if (oLinks.hasOwnProperty(sLinkKey)) {
+                            if (oLinks[sLinkKey].table.name == field.table_name) {
+        
+                            }
+        
+                        }
                     }
                 }
-            }
-        }
-        // engine = newEngine();
-        console.log('ERD', "\t", "Create new model");
-        console.log('ERD', "\t", oSerializeHelper.getSerialized());
-        console.log('ERD', "\t", "De-serialize", oSerializeHelper.getSerialized());
-        const model2 = new ErdDiagramModel();
-        console.log('DESERIALIZE');
-        console.log('Previous', diagramModel.serialize());
-        console.log('Current', oSerializeHelper.getSerialized());
-        model2.deserializeModel(oSerializeHelper.getSerialized(), engine);
-        console.log('DESERIALIZED');
-        engine.setModel(model2);
-        console.log('SETTED MODEL');
-        engine.repaintCanvas();
-        console.log('REAL_RENDER');
-        Renderer.realRender(diagramModel, engine);
-        setTimeout(() => {
-            Renderer.realRender(diagramModel, engine);
-        }, 100);
-        return diagramModel;
-        // model.serialize().layers.forEach()
+        
+                // engine = newEngine();
+                console.log('ERD', "\t", "Create new model");
+                console.log('ERD', "\t", oSerializeHelper.getSerialized());
+                console.log('ERD', "\t", "De-serialize", oSerializeHelper.getSerialized());
+        
+                const model2 = new ErdDiagramModel();
+                console.log('DESERIALIZE');
+                console.log('Previous', diagramModel.serialize());
+                console.log('Current',oSerializeHelper.getSerialized());
+        
+        
+                model2.deserializeModel(oSerializeHelper.getSerialized(), engine);
+        
+                console.log('DESERIALIZED');
+                engine.setModel(model2);
+                console.log('SETTED MODEL');
+                engine.repaintCanvas();
+                console.log('REAL_RENDER');
+                Renderer.realRender(diagramModel, engine);
+        
+        
+                setTimeout(() => {
+                    Renderer.realRender(diagramModel, engine);
+                }, 100);
+        
+                return diagramModel;
+                // model.serialize().layers.forEach()
+        
+        */
     }
     static addProperty(model, field) {
         console.log('ERD', 'Renderer.addProperty()', field);

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {PortWidget} from "@projectstorm/react-diagrams-core/src/entities/port/PortWidget";
-import {DiagramEngine} from '@projectstorm/react-diagrams-core/src/DiagramEngine';
+import {PortWidget} from "@projectstorm/react-diagrams-core/";
+import {DiagramEngine} from '@projectstorm/react-diagrams-core/';
 import {ErdNodeModel} from './ErdNodeModel';
 import {Field} from "../models/Field";
 import {Messenger} from "../helpers/Messenger";

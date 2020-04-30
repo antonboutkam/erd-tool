@@ -1,5 +1,5 @@
-import { LinkModel } from "@projectstorm/react-diagrams-core/src/entities/link/LinkModel";
+import { LinkModel } from "@projectstorm/react-diagrams-core/";
 export class ErdLinkModelGenerics {
 }
-class ErdLinkModel extends LinkModel {
+export class ErdLinkModel extends LinkModel {
 }

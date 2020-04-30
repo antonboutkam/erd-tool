@@ -1,7 +1,7 @@
-import { DiagramModel } from "@projectstorm/react-diagrams-core/src/models/DiagramModel";
+import { DiagramModel } from "@projectstorm/react-diagrams-core/";
 import * as _ from 'lodash';
 import { ErdNodeLayerModel } from "./ErdNodeLayerModel";
-class ErdDiagramModelGenerics {
+export class ErdDiagramModelGenerics {
 }
 export class ErdDiagramModel extends DiagramModel {
     getNodeLayers() {
@@ -14,8 +14,18 @@ export class ErdDiagramModel extends DiagramModel {
             return _.values(layer.getModels());
         });
     }
-    findModel(field) {
-        for (let nodeKey in this.getNodes()) {
-        }
+    findNode(field) {
+        const nodes = this.getNodes();
+        let result = null;
+        nodes.forEach((node) => {
+            if (node.table.name == field.table_name) {
+                node.table.fields.forEach((compareField, index2) => {
+                    if (field.name == compareField.name) {
+                        result = node;
+                    }
+                });
+            }
+        });
+        return result;
     }
 }

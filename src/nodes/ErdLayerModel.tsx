@@ -6,7 +6,7 @@ import {
     LayerModel,
     LayerModelGenerics
 } from "@projectstorm/react-canvas-core";
-import {LayerModelOptions} from "@projectstorm/react-canvas-core/src/entities/layer/LayerModel";
+import {LayerModelOptions} from "@projectstorm/react-canvas-core/";
 import {ErdNodeModel} from "./ErdNodeModel";
 
 export class ErdLayerModelGenerics implements LayerModelGenerics{
@@ -18,7 +18,10 @@ export class ErdLayerModelGenerics implements LayerModelGenerics{
 }
 export abstract class ErdLayerModel<G extends LayerModelGenerics = ErdLayerModelGenerics> extends LayerModel<G> {
 
-    
+
+    getModel(id: string) {
+        return this.models[id];
+    }
     getModels() {
         return this.models;
     }

@@ -1,35 +1,15 @@
-import {DiagramModel, DiagramModelGenerics, PortModel} from "@projectstorm/react-diagrams-core";
-import {Table} from "../models/Table";
-import {Link} from "../models/Link";
+import {DiagramModel, DiagramModelGenerics} from "@projectstorm/react-diagrams-core";
 import {Field} from "../models/Field";
 import {ErdNodeModel} from "../nodes/ErdNodeModel";
-import {ErdPortModel} from "../nodes/ErdPortModel";
+import {ErdLinkModel} from "../nodes/ErdLinkModel";
+import {ErdLayerModel} from "../nodes/ErdLayerModel";
+import {ErdLinkLayerModel} from "../nodes/ErdLinkLayerModel";
+import {ErdNodeLayerModel} from "../nodes/ErdNodeLayerModel";
 
 enum LayerType {
     Links = 'diagram-links',
     Node = 'diagram-nodes',
 }
-
-interface Layer<T extends ErdNodeModel> {
-    id:string,
-    type:LayerType,
-    models:ModelCollection<T>
-}
-
-interface PortCollection{
-
-}
-interface Model {id :string, type:string}
-interface ModelCollection<T extends ErdNodeModel> {[key:string] :T}
-
-interface NodeModel extends Model{
-    color: string,
-    id : string,
-    ports : PortCollection,
-    table : Table
-
-}
-interface LinkModel extends Model{}
 
 
 export class SerializeHelper {
@@ -45,7 +25,7 @@ export class SerializeHelper {
     }
 
     private findModel(field : Field):ErdNodeModel {
-        const oModels = this.getModels();
+        const oModels = this.getNodes();
         for (let sModelsKey in oModels) {
             let model : ErdNodeModel = oModels[sModelsKey];
             if(model.table.name == field.table_name)
@@ -129,61 +109,62 @@ export class SerializeHelper {
     {
         return this.serialized;
     }
-    public setLinks(links:ModelCollection<LinkModel>)
+    public setLinks(links:{[id:string] : ErdLinkModel})
     {
         console.log('SerializeHelper.setLinks()', links);
         this.serialized.layers[this.getLinkLayerIndex()] = links;
     }
-    public getLinks():Link[]
+    public getLinks():{[id:string] : ErdLinkModel}
     {
-        console.log('SerializeHelper.getLinks()', this.getModelLayer().models);
-        return this.getLinkLayer().models;
+        console.log('SerializeHelper.getLinks()', this.getLinkLayer().getModels());
+        return this.getLinkLayer().getModels();
     }
-    private setModels(collection : ModelCollection<NodeModel>)
+    private setNodes(nodes : {[id:string] : ErdNodeModel})
     {
-        console.log('SerializeHelper.setModels()', collection);
-        this.serialized.layers[this.getModelLayerIndex()] = collection;
+        console.log('SerializeHelper.setNodes()', nodes);
+        this.serialized.layers[this.getNodeLayerIndex()] = nodes;
     }
-    private getModels():ModelCollection<ErdNodeModel>
+    private getNodes():{[id:string] : ErdNodeModel}
     {
         console.log('SerializeHelper.getModels()');
         console.log("\t", "layer type", LayerType.Node);
-        console.log("\t", "model layer", this.getModelLayer());
-        console.log("\t", "model layer moels", this.getModelLayer().models);
-        return this.getModelLayer().models;
+        console.log("\t", "node layer", this.getNodeLayer());
+        console.log("\t", "node layer models", this.getNodeLayer().getModels());
+
+        return this.getNodeLayer().getModels();
     }
-    private getLayers<T extends Model>():Layer<T>[] {
+    private getLayers<t extends ErdLayerModel>():t[] {
         console.log('SerializeHelper.getLayers()', this.serialized.layers);
         return this.serialized.layers;
     }
-    private getLinkLayer():Layer<LinkModel> {
+    private getLinkLayer():ErdLinkLayerModel {
         console.log('SerializeHelper.getLinksLayer()');
-        return this.getLayers<LinkModel>()[this.getLinkLayerIndex()]
+        return this.getLayers<ErdLinkLayerModel>()[this.getLinkLayerIndex()]
     }
-    private getModelLayer():Layer<ErdNodeModel> {
+    private getNodeLayer():ErdNodeLayerModel {
         console.log('SerializeHelper.getModelLayer()');
-        return this.getLayers<NodeModel>()[this.getModelLayerIndex()];
+        return this.getLayers<ErdNodeLayerModel>()[this.getNodeLayerIndex()];
     }
 
     private getLinkLayerIndex():number {
         console.log('SerializeHelper.getLinkLayerIndex()');
 
-        const aLayers = this.getLayers<LinkModel>();
+        const aLayers = this.getLayers();
         for (let i:number = 0; i < aLayers.length; i++)
         {
-            if(aLayers[i].type == LayerType.Links)
+            if(aLayers[i].getOptions().type == LayerType.Links)
             {
                 return i;
             }
         }
     }
-    private getModelLayerIndex():number {
-        console.log('SerializeHelper.getModelLayerIndex()');
+    private getNodeLayerIndex():number {
+        console.log('SerializeHelper.getNodeLayerIndex()');
 
-        const aLayers = this.getLayers<LinkModel>();
+        const aLayers = this.getLayers();
         for (let i:number = 0; i < aLayers.length; i++)
         {
-            if(aLayers[i].type == LayerType.Node)
+            if(aLayers[i].getOptions().type == LayerType.Node)
             {
                 return i;
             }

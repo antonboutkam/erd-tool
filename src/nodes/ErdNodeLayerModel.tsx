@@ -1,15 +1,45 @@
-import {LayerModel, LayerModelGenerics} from "@projectstorm/react-canvas-core";
-import {NodeLayerModelGenerics} from "@projectstorm/react-diagrams-core/src/entities/node-layer/NodeLayerModel";
-import {DiagramEngine} from "@projectstorm/react-diagrams-core/src/DiagramEngine";
+import {NodeLayerModelGenerics} from "@projectstorm/react-diagrams-core/";
+import {DiagramEngine} from "@projectstorm/react-diagrams-core/";
+import {NodeLayerModel} from "@projectstorm/react-diagrams-core/";
+import {ErdNodeModel} from "./ErdNodeModel";
 import {NodeModel} from "@projectstorm/react-diagrams-core/src/entities/node/NodeModel";
-import {NodeLayerModel} from "@projectstorm/react-diagrams-core/src/entities/node-layer/NodeLayerModel";
+import {DiagramModel} from "@projectstorm/react-diagrams-core/src/models/DiagramModel";
+import {ErdDiagramModel} from "./ErdDiagramModel";
 
 
 export interface ErdNodeLayerModelGenerics extends NodeLayerModelGenerics {
-    CHILDREN: NodeModel;
+    CHILDREN: ErdNodeModel;
     ENGINE: DiagramEngine;
 }
 
-export class ErdNodeLayerModel<G extends NodeLayerModelGenerics = ErdNodeLayerModelGenerics> extends NodeLayerModel<G>{
+export class ErdNodeLayerModel<G extends ErdNodeLayerModelGenerics = ErdNodeLayerModelGenerics> extends NodeLayerModel<G>{
 
+    constructor()
+    {
+        super();
+    }
+    getModels():{[id:string] : ErdNodeModel}
+    {
+        return this.models;
+    }
+
+    addModel(model: G['CHILDREN']): void {
+        if (!(model instanceof ErdNodeModel)) {
+            throw new Error('Can only add nodes to this layer');
+        }
+        model.registerListener({
+            entityRemoved: () => {
+                (this.getParent() as ErdDiagramModel).removeNode(model);
+            }
+        });
+        super.addModel(model);
+    }
+
+    getChildModelFactoryBank(engine: G['ENGINE']) {
+        return engine.getNodeFactories();
+    }
+
+    getNodes() {
+        return this.getModels();
+    }
 }

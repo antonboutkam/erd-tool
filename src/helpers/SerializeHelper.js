@@ -10,7 +10,7 @@ export class SerializeHelper {
         console.log("\t", 'Serialized', this.serialized);
     }
     findModel(field) {
-        const oModels = this.getModels();
+        const oModels = this.getNodes();
         for (let sModelsKey in oModels) {
             let model = oModels[sModelsKey];
             if (model.table.name == field.table_name) {
@@ -95,19 +95,19 @@ export class SerializeHelper {
         this.serialized.layers[this.getLinkLayerIndex()] = links;
     }
     getLinks() {
-        console.log('SerializeHelper.getLinks()', this.getModelLayer().models);
-        return this.getLinkLayer().models;
+        console.log('SerializeHelper.getLinks()', this.getLinkLayer().getModels());
+        return this.getLinkLayer().getModels();
     }
-    setModels(collection) {
-        console.log('SerializeHelper.setModels()', collection);
-        this.serialized.layers[this.getModelLayerIndex()] = collection;
+    setNodes(nodes) {
+        console.log('SerializeHelper.setNodes()', nodes);
+        this.serialized.layers[this.getNodeLayerIndex()] = nodes;
     }
-    getModels() {
+    getNodes() {
         console.log('SerializeHelper.getModels()');
         console.log("\t", "layer type", LayerType.Node);
-        console.log("\t", "model layer", this.getModelLayer());
-        console.log("\t", "model layer moels", this.getModelLayer().models);
-        return this.getModelLayer().models;
+        console.log("\t", "node layer", this.getNodeLayer());
+        console.log("\t", "node layer models", this.getNodeLayer().getModels());
+        return this.getNodeLayer().getModels();
     }
     getLayers() {
         console.log('SerializeHelper.getLayers()', this.serialized.layers);
@@ -117,24 +117,24 @@ export class SerializeHelper {
         console.log('SerializeHelper.getLinksLayer()');
         return this.getLayers()[this.getLinkLayerIndex()];
     }
-    getModelLayer() {
+    getNodeLayer() {
         console.log('SerializeHelper.getModelLayer()');
-        return this.getLayers()[this.getModelLayerIndex()];
+        return this.getLayers()[this.getNodeLayerIndex()];
     }
     getLinkLayerIndex() {
         console.log('SerializeHelper.getLinkLayerIndex()');
         const aLayers = this.getLayers();
         for (let i = 0; i < aLayers.length; i++) {
-            if (aLayers[i].type == LayerType.Links) {
+            if (aLayers[i].getOptions().type == LayerType.Links) {
                 return i;
             }
         }
     }
-    getModelLayerIndex() {
-        console.log('SerializeHelper.getModelLayerIndex()');
+    getNodeLayerIndex() {
+        console.log('SerializeHelper.getNodeLayerIndex()');
         const aLayers = this.getLayers();
         for (let i = 0; i < aLayers.length; i++) {
-            if (aLayers[i].type == LayerType.Node) {
+            if (aLayers[i].getOptions().type == LayerType.Node) {
                 return i;
             }
         }

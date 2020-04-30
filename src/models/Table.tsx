@@ -16,17 +16,24 @@ export class Table implements MessageContentGenerics{
     is_persistent : boolean;
     fields : Field[];
 
-    removeField(fieldToRemove : Field):void
+    static removeField(fields : Field[], fieldToRemove : Field):Field[]
     {
+        console.log('Table.removeField', fields);
         let newFields : Field[] = [];
-        this.fields.forEach((someField : Field, index : number) => {
+        fields.forEach((someField : Field) => {
+            console.log(someField);
             if(someField.name != fieldToRemove.name)
             {
                 newFields.push(someField);
             }
+            else
+            {
+                console.log('REMOVED', someField);
+            }
 
         });
-        this.fields = newFields;
+        return newFields;
+
     }
     static fromJson(tableJson : ITable):Table
     {

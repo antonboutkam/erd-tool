@@ -1,34 +1,35 @@
-import createEngine, {
-    DiagramModel,
-    DagreEngine,
-    DiagramEngine,
-    PathFindingLinkFactory
-} from '@projectstorm/react-diagrams';
+import {DagreEngine} from "@projectstorm/react-diagrams-routing/";
+import {DiagramEngine, DiagramModel} from "@projectstorm/react-diagrams-core/";
+import {PathFindingLinkFactory} from "@projectstorm/react-diagrams-routing/";
+
+
 import * as React from 'react';
 import { TopButton, TopButtonRight, WorkspaceWidget } from './helpers/WorkspaceWidget';
-import { CanvasWidget } from '@projectstorm/react-canvas-core';
+import { CanvasWidget } from '@projectstorm/react-canvas-core/';
 import { CanvasContainerWidget } from './helpers/CanvasContainerWidget';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearchMinus, faSearchPlus, faTable, faCogs } from '@fortawesome/free-solid-svg-icons'
 import { Settings } from "./Settings";
 import {Messenger} from "./helpers/Messenger";
+import {ErdDiagramModel} from "./nodes/ErdDiagramModel";
+import {Renderer} from "./renderer";
 
 /**
  * Tests auto distribution
  */
-export class WorkspaceContainer extends React.Component<{ model: DiagramModel; engine: DiagramEngine }, any> {
+export class WorkspaceContainer extends React.Component<{ model: ErdDiagramModel; engine: DiagramEngine }, any> {
     engine: DagreEngine;
-
-    static staticEngine: DagreEngine;
-
-    static getEngine():DagreEngine
-    {
-        return WorkspaceContainer.staticEngine;
-    }
 
     constructor(props) {
         super(props);
-        this.engine = new DagreEngine({
+
+        this.zoom = this.zoom.bind(this);
+        this.zoomOut = this.zoomOut.bind(this);
+        this.zoomIn = this.zoomIn.bind(this);
+    }
+
+    autoDistribute = () => {
+        const distributeEngine = new DagreEngine({
             graph: {
                 rankdir: 'LR',
                 ranker: 'tight-tree',
@@ -41,19 +42,17 @@ export class WorkspaceContainer extends React.Component<{ model: DiagramModel; e
             },
             includeLinks: true
         });
-        WorkspaceContainer.staticEngine = this.engine;
-        this.zoom = this.zoom.bind(this);
-        this.zoomOut = this.zoomOut.bind(this);
-        this.zoomIn = this.zoomIn.bind(this);
-    }
-
-    autoDistribute = () => {
+        distributeEngine.redistribute(this.props.model);
+        this.reroute();
+        Renderer.done(this.props.model);
+        /*
         this.engine.redistribute(this.props.model);
 
         // only happens if pathfing is enabled (check line 25)
         this.reroute();
         this.props.engine.repaintCanvas();
         this.props.engine.getModel().setZoomLevel(Settings.defaultZoomLevel);
+        */
     };
 
     componentDidMount(): void {

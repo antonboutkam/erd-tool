@@ -1,7 +1,8 @@
-import { DagreEngine, PathFindingLinkFactory } from '@projectstorm/react-diagrams';
+import { DagreEngine } from "@projectstorm/react-diagrams-routing/";
+import { PathFindingLinkFactory } from "@projectstorm/react-diagrams-routing/";
 import * as React from 'react';
 import { TopButton, TopButtonRight, WorkspaceWidget } from './helpers/WorkspaceWidget';
-import { CanvasWidget } from '@projectstorm/react-canvas-core';
+import { CanvasWidget } from '@projectstorm/react-canvas-core/';
 import { CanvasContainerWidget } from './helpers/CanvasContainerWidget';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearchMinus, faSearchPlus, faTable, faCogs } from '@fortawesome/free-solid-svg-icons';

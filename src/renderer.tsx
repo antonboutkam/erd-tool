@@ -1,28 +1,21 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import createEngine, {
-    DefaultLinkModel,
-    DiagramEngine,
-    PortModel
+    DagreEngine,
+    DefaultLinkModel, DefaultNodeFactory,
+    DiagramEngine, DiagramModel, PathFindingLinkFactory
 } from '@projectstorm/react-diagrams';
 import {ErdDiagramModel} from "./nodes/ErdDiagramModel";
-import {ErdNodeFactory} from './nodes/ErdNodeFactory';
 import {ErdNodeModel} from './nodes/ErdNodeModel';
 import {WorkspaceContainer} from "./WorkspaceContainer";
 import {Table} from "./models/Table";
 import {eventHandler} from "./nodes/EventHandler";
 import {Field} from "./models/Field";
-import {SerializeHelper} from "./helpers/SerializeHelper";
-import {Link} from "./models/Link";
+import {ErdNodeFactory} from "./nodes/ErdNodeFactory";
+import {Settings} from "./Settings";
 
-let newEngine = ():DiagramEngine =>
-{
-    const engine = createEngine();
-    engine.getNodeFactories().registerFactory(new ErdNodeFactory());
-    return engine;
-};
-
-let engine = newEngine();
+let engine = createEngine();
+engine.getNodeFactories().registerFactory(new ErdNodeFactory());
 
 
 export class Renderer {
@@ -30,25 +23,16 @@ export class Renderer {
     static domContentLoaded : boolean = false;
     static nodeIndex:number = 0;
 
-    static redistribute(model : ErdDiagramModel)
-    {
-        WorkspaceContainer.getEngine().redistribute(model);
-    }
-    private static realRender(model : ErdDiagramModel, engine : DiagramEngine) : void
-    {
-        ReactDOM.render(<WorkspaceContainer model={model} engine={engine}/>, document.querySelector('#application'));
-        Renderer.redistribute(model);
-    }
-    static render(model : ErdDiagramModel): void {
+    static render(model : DiagramModel): void {
 
         engine.setModel(model);
 
         document.addEventListener('DOMContentLoaded', () => {
             Renderer.domContentLoaded = true;
-            Renderer.realRender(model, engine);
+            ReactDOM.render(<WorkspaceContainer model={model} engine={engine}/>, document.querySelector('#application'));
         });
     }
-    static removeField(diagramModel : ErdDiagramModel, field : Field):ErdDiagramModel
+    static removeField(diagramModel : ErdDiagramModel, field : Field):void
     {
         /*
             1. Verwijder de property zelf.
@@ -56,12 +40,24 @@ export class Renderer {
             3. Verwijder spook links
          */
 
-        let model = diagramModel.findModel(field);
-        model.removePortByName(field.name + '_in');
-        model.removePortByName(field.name + '_out');
-        model.table.removeField(field);
+        console.log(diagramModel.getModels());
+
+        console.log('REMOVE FIELD', field);
+        let model = diagramModel.findNode(field);
+
+        console.log('MODEL FOUND', model);
+        model.removePortByName(field.table_name + '_' + field.name + '_in');
+        model.removePortByName(field.table_name + '_' + field.name + '_out');
 
 
+        console.log('PORTS REMOVED', model);
+
+        console.log('TABLE BEFORE', model.table);
+        model.table.fields = Table.removeField(model.table.fields, field);
+        console.log('TABLE AFTER', model.table);
+
+        Renderer.done(diagramModel);
+        /*
 
         console.log('ERD', 'Renderer.removeField()', field);
 
@@ -128,7 +124,7 @@ export class Renderer {
         return diagramModel;
         // model.serialize().layers.forEach()
 
-
+*/
     }
     static addProperty(model : ErdDiagramModel, field : Field):void
     {
@@ -179,8 +175,25 @@ export class Renderer {
     }
     static done(model : ErdDiagramModel)
     {
+
         console.log('ERD', 'Renderer.done()', model);
+
         engine.setModel(model);
+        engine.repaintCanvas();
+
+        engine
+            .getLinkFactories()
+            .getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
+            .calculateRoutingMatrix();
+
+        engine.repaintCanvas();
+
+        setTimeout(() => {
+            console.log('repaint');
+            engine.repaintCanvas();
+            ReactDOM.render(<WorkspaceContainer model={model} engine={engine}/>, document.querySelector('#application'));
+            engine.repaintCanvas();
+        }, 500)
     }
     static clear(model:ErdDiagramModel)
     {

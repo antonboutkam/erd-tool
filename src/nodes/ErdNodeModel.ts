@@ -1,7 +1,6 @@
 import {DefaultPortModelOptions} from '@projectstorm/react-diagrams';
-import {NodeModel, NodeModelGenerics, NodeModelListener} from '@projectstorm/react-diagrams-core/src/entities/node/NodeModel';
-import {PortModel} from '@projectstorm/react-diagrams-core/src/entities/port/PortModel';
-import {DiagramModel} from '@projectstorm/react-diagrams-core/src/models/DiagramModel';
+import {NodeModel, NodeModelGenerics, NodeModelListener} from '@projectstorm/react-diagrams-core/';
+import {DiagramModel} from '@projectstorm/react-diagrams-core/';
 
 import { BaseModelOptions } from '@projectstorm/react-canvas-core';
 import {Table} from '../models/Table';
@@ -19,7 +18,7 @@ export interface ErdNodeModelGenerics extends NodeModelGenerics {
 	PARENT: DiagramModel;
 }
 
-export class ErdNodeModel<G extends NodeModelGenerics = ErdNodeModelGenerics> extends NodeModel<G> {
+export class ErdNodeModel<G extends ErdNodeModelGenerics = ErdNodeModelGenerics> extends NodeModel<G> {
 	color: string;
 	table: Table;
 	protected ports: { [s: string]: ErdPortModel };
@@ -44,7 +43,7 @@ export class ErdNodeModel<G extends NodeModelGenerics = ErdNodeModelGenerics> ex
 				name: portName
 			};
 			portRegister[portName] = currentModel.addPort(
-				new PortModel(portModelOptions)
+				new ErdPortModel(portModelOptions)
 			);
 		});
 
@@ -58,7 +57,7 @@ export class ErdNodeModel<G extends NodeModelGenerics = ErdNodeModelGenerics> ex
 				name: portName
 			};
 			portRegister[portName] = currentModel.addPort(
-				new PortModel(portModelOptions)
+				new ErdPortModel(portModelOptions)
 			);
 		});
 
@@ -70,10 +69,11 @@ export class ErdNodeModel<G extends NodeModelGenerics = ErdNodeModelGenerics> ex
 		for (let portsKey in ports) {
 			if(ports.hasOwnProperty(portsKey))
 			{
-				let port : ErdPortModel;
-
+				let port : ErdPortModel = ports[portsKey];
+				console.log(port.getName(), name);
 				if(port.getName() === name)
 				{
+					console.log('REMOVE!');
 					port.removeLinks();
 					this.removePort(port);
 				}
@@ -95,7 +95,7 @@ export class ErdNodeModel<G extends NodeModelGenerics = ErdNodeModelGenerics> ex
 	{
 		return this.makePortName(table.name, field.name, direction);
 	}
-	static getPortFromRegister(portName):PortModel
+	static getPortFromRegister(portName):ErdPortModel
 	{
 		return portRegister[portName];
 	}

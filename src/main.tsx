@@ -7,10 +7,7 @@ import {Table} from "./models/Table";
 import {Relation} from "./models/Relation";
 import {Message, Messenger} from "./helpers/Messenger";
 import {Field} from "./models/Field";
-import {DiagramModelGenerics} from "@projectstorm/react-diagrams-core";
 import {ErdDiagramModel} from "./nodes/ErdDiagramModel";
-import {DiagramModelOptions} from "@projectstorm/react-canvas-core/src/entities/canvas/CanvasModel";
-import {DiagramListener, LayerModel} from "@projectstorm/react-canvas-core";
 const queryString = require('query-string');
 
 fetch.Promise = Promise;
@@ -19,15 +16,8 @@ console.log(location.search);
 const getVariables = queryString.parse(location.search);
 
 
-class ErdDiagramModelGenerics implements DiagramModelGenerics
-{
-	LISTENER : DiagramListener;
-	OPTIONS: DiagramModelOptions;
-	LAYER: LayerModel;
 
-}
-
-let model = new ErdDiagramModel<ErdDiagramModelGenerics>();
+let model = new ErdDiagramModel();
 Renderer.render(model);
 // getVariables.schema points to the schema API, for instance 'http://api.overheid.demo.novum.nuidev.nl/v2/schema.json'
 
@@ -48,9 +38,8 @@ let loadNodes = () => {
 				});
 
 				setTimeout(() => {
-					Renderer.redistribute(model);
 					Renderer.done(model);
-				},10);
+				},100);
 
 			}
 		);
@@ -78,8 +67,5 @@ Messenger.onReceive('property_deleted', (message : Message<Field>) => {
 	console.log("Messenger.onReceive().property_deleted");
 	console.log("\t", JSON.stringify(message.content));
 	// loadNodes();
-
-	model = Renderer.removeField(model, Field.fromJson(message.content));
-	Renderer.done(model);
-
+	Renderer.removeField(model, Field.fromJson(message.content));
 });

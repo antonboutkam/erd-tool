@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PortWidget } from "@projectstorm/react-diagrams-core/src/entities/port/PortWidget";
+import { PortWidget } from "@projectstorm/react-diagrams-core/";
 import { Field } from "../models/Field";
 import { Messenger } from "../helpers/Messenger";
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
