@@ -23,7 +23,7 @@
 		"@projectstorm/react-diagrams": "^6.0.2",
 		"bluebird": "^3.7.2",
 		"lodash": "4.*",
-		"node-fetch": "^2.6.0",
+		"node-fetch": "^3.1.1",
 		"query-string": "^6.11.1",
 		"regenerator-runtime": "*",
 		"vue": "^2.0.0",
